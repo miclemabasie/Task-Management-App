@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/ui/Header'
 import Title from '../../components/ui/Title'
+import CategoryBox from '../../components/ui/CategoryBox'
 
 const HomeScreen = () => {
   const [user, setUser] = useState(null)
@@ -18,7 +19,8 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <Header user={user} />
       <Title size={30} color={'white'} text={"Manage Your Daily Task"}/>
-      <Text>HomeScreen</Text>
+      
+      <CategoryBox />
     </View>
   )
 }
