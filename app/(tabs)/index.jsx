@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Header from '../../components/ui/Header'
 import Title from '../../components/ui/Title'
 import CategoryBox from '../../components/ui/CategoryBox'
+import TodoList from '../../components/ui/TodoList'
 
 const HomeScreen = () => {
   const [user, setUser] = useState(null)
@@ -17,10 +18,13 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Header user={user} />
+      <Text>This is is</Text>
+      {/* <Header user={user} />
       <Title size={30} color={'white'} text={"Manage Your Daily Task"}/>
       
       <CategoryBox />
+
+      <TodoList /> */}
     </View>
   )
 }
@@ -29,8 +33,6 @@ export default HomeScreen
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#000",
     padding: 20
   }
 })
