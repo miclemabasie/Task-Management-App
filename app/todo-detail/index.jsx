@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import React, { useEffect } from 'react';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
+import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Badge from '../../components/ui/Badge';
-import { deleteTodo } from '../../utils/TodoManager.js'
+import { deleteTodo, editTodo } from '../../utils/TodoManager.js'
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 
 
@@ -16,7 +17,50 @@ const TodoDetailView = () => {
     Low: 'green',
   };
 
-  console.log("this is the id", id)
+  const handleEdit = () => {
+    // 📝 For simplicity, using prompts (Replace with your form/modal in real scenarios)
+    Alert.prompt(
+      "Edit Todo",
+      "Enter new title for this task:",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Save",
+          onPress: async (newTitle) => {
+            if (newTitle) {
+              await editTodo(id, { title: newTitle });
+              console.log(`📝 Todo ${id} updated with title: ${newTitle}`);
+            } else {
+              console.log("⚠️ No changes made.");
+            }
+          },
+        },
+      ],
+      "plain-text"
+    );
+  };
+
+  const handleDelete = async () => {
+    Alert.alert(
+      "Delete Confirmation",
+      "Are you sure you want to delete this todo?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          onPress: async () => {
+            await deleteTodo(id);
+            console.log(`🗑️ Todo ${id} deleted successfully.`);
+            router.push('/(tabs)/todos')
+          },
+          style: "destructive",
+        },
+      ]
+    );
+  };
   
   const formatTime = (timeString) => {
     if (!timeString) return 'N/A';
@@ -57,18 +101,12 @@ const TodoDetailView = () => {
       ),
       headerRight: () => (
         <View style={styles.headerIcons}>
-          <MaterialCommunityIcons
-            name="trash-can-outline"
-            size={24}
-            color="red"
+          <TouchableOpacity 
             onPress={() => deleteTodo(id)}
-          />
-          <MaterialCommunityIcons
-            name="pencil-outline"
-            size={24}
-            color="black"
-            onPress={() => console.log("Edit pressed")}
-          />
+          >
+
+            <AntDesign name="delete" size={24} color="red" />
+          </TouchableOpacity>
         </View>
       ),
     });
@@ -115,7 +153,20 @@ const TodoDetailView = () => {
           <Text style={styles.descriptionHeading}>ID:</Text>
           <Text style={styles.descriptionText}>{id}</Text>
         </View>
+
+        <View style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.button} onPress={handleEdit}>
+        <MaterialCommunityIcons name="pencil-outline" size={24} color="green" />
+        <Text style={styles.buttonText}>Edit</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={handleDelete}>
+        <MaterialCommunityIcons name="trash-can-outline" size={24} color="red" />
+        <Text style={styles.buttonText}>Delete</Text>
+      </TouchableOpacity>
+    </View>
       </View>
+     
     </View>
   );
 };
@@ -186,3 +237,26 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
 });
+
+
+// <TouchableOpacity 
+//             onPress={() => console.log("Edit pressed")}
+//           >
+//           <MaterialCommunityIcons
+//             name="trash-can-outline"
+//             size={24}
+//             color="red"
+//             onPress={() => deleteTodo(id)}
+//           />
+//           </TouchableOpacity>
+          
+//           <TouchableOpacity 
+//             onPress={() => console.log("Edit pressed")}
+//           >
+//           <MaterialCommunityIcons
+//             name="pencil-outline"
+//             size={24}
+//             color="black"
+            
+//           />
+//           </TouchableOpacity>
