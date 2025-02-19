@@ -1,25 +1,24 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform} from 'react-native';
+import { View, Platform, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function TabLayout() {
   return (
-    <Tabs 
+    <Tabs
       screenOptions={{
-        tabBarActiveTintColor: 'white',  // Proper tint color for dark mode
+        tabBarActiveTintColor: 'white', // Proper tint color for dark mode
         tabBarInactiveTintColor: 'gray', // Subtle color for inactive tabs
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#2b2929', // Dark background for the tab bar
-          borderTopWidth: 0, // Removes top border for a cleaner look
+          backgroundColor: '#444141', // Dark background for the tab bar
           elevation: 0, // Removes shadow on Android
-          paddingBottom: 5, // Adjusted padding
           width: '90%',
           alignSelf: 'center',
           borderRadius: 20,
-          marginVertical: 10,
-
+          height: 70, // Increased height for better padding
+          paddingBottom: 15, // Adds space inside the tab bar for icons
+          paddingTop: 10, // Ensures the icons are centered vertically
         },
       }}
     >
@@ -33,18 +32,21 @@ export default function TabLayout() {
         }}
       />
 
-<Tabs.Screen
-        name="createTodo"        
+      {/* Floating Add Todo Button */}
+      <Tabs.Screen
+        name="createTodo"
         options={{
-          title: '+',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="plus" color={color} size={size} />
+          title: '',
+          tabBarIcon: () => (
+            <View style={styles.floatingButton}>
+              <MaterialCommunityIcons name="plus" color={'white'} size={30} />
+            </View>
           ),
         }}
       />
-      
+
       <Tabs.Screen
-        name="todos"        
+        name="todos"
         options={{
           title: 'To-Dos',
           tabBarIcon: ({ color, size }) => (
@@ -52,12 +54,24 @@ export default function TabLayout() {
           ),
         }}
       />
-
- 
-
-      
     </Tabs>
   );
 }
 
-
+const styles = StyleSheet.create({
+  floatingButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: -25, // Moves above the tab bar
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5, // Android shadow
+  },
+});

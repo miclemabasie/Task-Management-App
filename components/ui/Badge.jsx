@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 
-const Badge = ({priority}) => {
+const Badge = ({priority, color}) => {
   return (
-      <Text style={styles.badge}>{priority}</Text>
+      <Text style={[styles.badge, {backgroundColor: color}]}>{priority}</Text>
   )
 }
 

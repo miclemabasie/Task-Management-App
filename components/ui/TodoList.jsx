@@ -1,47 +1,59 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import TodoCard from './TodoCard'
+import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import TodoCard from './TodoCard';
 import { useRouter } from 'expo-router';
 
 const TodoList = () => {
-  let tasksItems = [
-    {title: 'Design new app', description: 'Work on some new app design', startTime: Date.now(), endTime: Date.now(), priority: 'high', dueDate: Date.now(), isComplete: false},
-    {title: 'Fix Bugs', description: 'Resolve issues in existing project', startTime: Date.now(), endTime: Date.now(), priority: 'medium', dueDate: Date.now(), isComplete: false},
-    {title: 'Write Documentation', description: 'Prepare user guide and API docs', startTime: Date.now(), endTime: Date.now(), priority: 'low', dueDate: Date.now(), isComplete: false},
-    {title: 'Write Documentation', description: 'Prepare user guide and API docs', startTime: Date.now(), endTime: Date.now(), priority: 'low', dueDate: Date.now(), isComplete: false},
-    {title: 'Write Documentation', description: 'Prepare user guide and API docs', startTime: Date.now(), endTime: Date.now(), priority: 'low', dueDate: Date.now(), isComplete: false},
-    {title: 'Write Documentation', description: 'Prepare user guide and API docs', startTime: Date.now(), endTime: Date.now(), priority: 'low', dueDate: Date.now(), isComplete: false},
-    {title: 'Write Documentation', description: 'Prepare user guide and API docs', startTime: Date.now(), endTime: Date.now(), priority: 'low', dueDate: Date.now(), isComplete: false},
-    {title: 'Write Documentation', description: 'Prepare user guide and API docs', startTime: Date.now(), endTime: Date.now(), priority: 'low', dueDate: Date.now(), isComplete: false},
-    {title: 'Write Documentation', description: 'Prepare user guide and API docs', startTime: Date.now(), endTime: Date.now(), priority: 'low', dueDate: Date.now(), isComplete: false},
-    {title: 'Write Documentation', description: 'Prepare user guide and API docs', startTime: Date.now(), endTime: Date.now(), priority: 'low', dueDate: Date.now(), isComplete: false}
-  ];
-
   const [tasks, setTasks] = useState([]);
+  const router = useRouter();  
+  const [refreshing, setRefreshing] = useState(false)
+  
+   
+
+  // 🚀 Load todos from AsyncStorage
+  const loadTodos = async () => {
+    try {
+      const storedTodos = await AsyncStorage.getItem('todos');
+      if (storedTodos !== null) {
+        setTasks(JSON.parse(storedTodos));
+      } else {
+        setTasks([]); // No todos found, set empty
+      }
+    } catch (error) {
+      console.error('Failed to load todos:', error);
+    }
+  };
+
 
   useEffect(() => {
-    setTasks(tasksItems);
-  }, []); 
+    loadTodos(); // Load on mount
+  }, []);
 
+  // load todos during refresh
+  const handleRefreshing = () => {
+    setRefreshing(true)
+      loadTodos();
+    setRefreshing(false)
+  }
   const renderTaskItem = ({ item }) => (
-    <TodoCard 
-      title={item.title} 
-      description={item.description} 
-      priority={item.priority} 
+    <TodoCard
+      id={item.id}
+      title={item.title}
+      description={item.description}
+      priority={item.priority}
       startTime={item.startTime}
       endTime={item.endTime}
       dueDate={item.dueDate}
     />
   );
 
-  const router = useRouter();
-
   return (
     <View style={styles.todoListBox}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <Text style={{ color: 'white', fontSize: 24, fontWeight: "bold" }}>Ongoing</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Ongoing</Text>
         <TouchableOpacity onPress={() => router.push('/(tabs)/todos')}>
-          <Text style={{ color: 'white' }}>See All</Text>
+          <Text style={styles.seeAll}>See All</Text>
         </TouchableOpacity>
       </View>
 
@@ -49,15 +61,39 @@ const TodoList = () => {
         data={tasks}
         renderItem={renderTaskItem}
         keyExtractor={(item, index) => index.toString()}
+        ListEmptyComponent={<Text style={styles.empty}>No Todos Available</Text>}
+        // refreshing={refreshing}
+        // onRefresh={handleRefreshing}
       />
     </View>
   );
-}
+};
 
 export default TodoList;
 
 const styles = StyleSheet.create({
   todoListBox: {
     marginTop: 20,
-  }
+    marginBottom: 400,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  title: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  seeAll: {
+    color: 'white',
+  },
+  empty: {
+    color: 'white',
+    textAlign: 'center',
+    marginTop: 20,
+  },
 });
+

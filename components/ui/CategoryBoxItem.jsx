@@ -2,7 +2,6 @@ import { View, Text, Image, StyleSheet } from 'react-native'
 import React from 'react'
 
 const CategoryBoxItem = ({ title, image, color }) => {
-    console.log("this is title", title)
   return (
     <View style={[styles.boxContainer, { backgroundColor: color }]}>
       <Image source={image} style={styles.image} />

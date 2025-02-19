@@ -7,6 +7,8 @@ import TodoList from '../../components/ui/TodoList'
 
 const HomeScreen = () => {
   const [user, setUser] = useState(null)
+  
+  
 
   useEffect(() => {
     setUser({
@@ -16,15 +18,16 @@ const HomeScreen = () => {
     })
   }, [])
 
+
+
   return (
     <View style={styles.container}>
-      <Text>This is is</Text>
-      {/* <Header user={user} />
+      <Header user={user} />
       <Title size={30} color={'white'} text={"Manage Your Daily Task"}/>
       
       <CategoryBox />
 
-      <TodoList /> */}
+      <TodoList />
     </View>
   )
 }
@@ -33,6 +36,7 @@ export default HomeScreen
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20
+    padding: 20,
+    marginBottom: 220,
   }
 })
